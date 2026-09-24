@@ -25,6 +25,15 @@
     .readout { margin-top: 1rem; font-variant-numeric: tabular-nums; color: #dbeafe; }
     @media (max-width: 700px) { main { grid-template-columns: 1fr; } aside { border-right: 0; border-bottom: 1px solid #263247; } }
   </style>
+  <!-- The addon modules import "three" by name. This import map tells the
+       browser exactly which file that name means on GitHub Pages. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
 </head>
 <body>
   <header><h1>MPU6050 STL Viewer</h1></header>
@@ -44,12 +53,9 @@
   </main>
 
   <script type="module">
-    // esm.sh rewrites Three.js's internal imports for browser use. The previous
-    // jsDelivr files contained the bare specifier "three", which GitHub Pages
-    // cannot resolve and caused the page to stop at the import statement.
-    import * as THREE from 'https://esm.sh/three@0.160.0';
-    import { STLLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/STLLoader.js';
-    import { OrbitControls } from 'https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import * as THREE from 'three';
+    import { STLLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
     const canvas = document.querySelector('#viewer');
     const fileInput = document.querySelector('#stl-file');
@@ -154,7 +160,6 @@
           const lines = buffer.split(/\r?\n/);
           buffer = lines.pop() || '';
           for (const line of lines) {
-            // Ignore the Arduino startup text and accept only 3 numeric values.
             const values = line.split(',').map(value => Number.parseFloat(value.trim()));
             updateSensor(values);
           }
